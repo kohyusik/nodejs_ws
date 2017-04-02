@@ -1,10 +1,10 @@
 <html>
 <head>
- 
+
     <title></title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
- 
+
 </head>
 <body>
     <b style="color: blue; font-size: 40px">WEB CLIENT</b><p>
@@ -14,14 +14,13 @@
     Message  <input type="text" id="msgbox"/>
     <br>
     <span id="msgs"></span>
- 
-    <script type="text/javascript">
 
-        var SERVER_IP = '121.166.177.31';
-        var SERVER_PORT = '3000';
+    <script type="text/javascript">
+      var SERVER_IP = '127.0.0.1';
+      var SERVER_PORT = '3001';
 		    var socket;
 		    var isConnect = false;
-        
+
         $(document).ready(function(){
             $('#connectBtn').click(function() {
                 if (!isConnect) {
@@ -38,12 +37,12 @@
                       console.log(msg);
                       $('#msgs').append(msg+'<BR>');
                   });
-                  
+
                   socket.on('toclient',function(data){
                       console.log(data.msg);
                       $('#msgs').append(data.msg+'<BR>');
                   });
-                  
+
                 }
 
               });
@@ -55,7 +54,7 @@
                 }
               });
 
-              
+
               $("#msgbox").keyup(function(event) {
                   if (event.which == 13) {
                       socket.emit('fromclient',{msg:$('#msgbox').val()});
@@ -63,9 +62,9 @@
                   }
               });
         });
-        
 
-        
+
+
     </script>
 </body>
 </html>

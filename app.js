@@ -12,8 +12,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/example', routes);
 
-var httpServer =http.createServer(app).listen(3000, function(req,res){
-	console.log('Socket IO server has been started: localhost:3000');
+var httpServer =http.createServer(app).listen(3001, function(req,res){
+	console.log('Socket IO server has been started: localhost:3001');
 });
 //upgrade http server to socket.io server
 var io = require('socket.io').listen(httpServer);
