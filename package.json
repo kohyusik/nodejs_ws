@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/kohyusik/nodejs_ws/issues"
   },
-  "homepage": "https://github.com/kohyusik/nodejs_ws#readme"
+  "homepage": "https://github.com/kohyusik/nodejs_ws#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3"
+  }
 }
