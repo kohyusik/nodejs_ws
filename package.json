@@ -1,0 +1,22 @@
+{
+  "name": "nodejs_ws",
+  "version": "1.0.0",
+  "description": "nodejs websocket server",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kohyusik/nodejs_ws.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "kohyusik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kohyusik/nodejs_ws/issues"
+  },
+  "homepage": "https://github.com/kohyusik/nodejs_ws#readme"
+}
