@@ -37,7 +37,7 @@
 
     function openChannel() {
         // SDP 정보 교환을 위해, 서버와 연결한다.
-        url = "ws://127.0.0.1:8080";
+        url = "ws://localhost:3001";
         wsock = new WebSocket(url);
 
         wsock.onopen = function() {
