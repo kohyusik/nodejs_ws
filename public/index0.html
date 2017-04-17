@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+  <div id="local">
+    <video
+      width="25%" height="25%" id="localVideo" autoplay="autoplay" style="opacity: 0;
+      -webkit-transition-property: opacity;
+      -webkit-transition-duration: 2s;" src="blob:http://localhost:3001/43eba44f-8d76-4232-99cf-78fab989e595">
+    </video>
+  </div>
+  <input type="file" accept="audio/*" capture="microphone">
+  <b>Send message</b><p>
+  <!-- id  <input type="text" id="idbox" value="guest1"/> -->
+  <br><br>
+  Message  <input type="text" id="msgbox"/>
+  <br>
+  <span id="msgs"></span>
+
+  </body>
+  </html>

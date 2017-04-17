@@ -1,31 +1,79 @@
+<!DOCTYPE html>
 <html>
 <head>
-
-    <title></title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-
+  <title>Test</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 </head>
 <body>
-    <b>Send message</b><p>
-    <!-- id  <input type="text" id="idbox" value="guest1"/> -->
-    <br><br>
-    Message  <input type="text" id="msgbox"/>
-    <br>
-    <span id="msgs"></span>
+  <div id="local" style="display:none;">
+    <video
+      width="25%" height="25%" id="localVideo" autoplay="autoplay" style="opacity: 0;
+      -webkit-transition-property: opacity;
+      -webkit-transition-duration: 2s;">
+    </video>
+  </div>
+  <input type="file" accept="audio/*" capture="microphone">
+  <b>Send message</b><p>
+  <!-- id  <input type="text" id="idbox" value="guest1"/> -->
+  <br><br>
+  Message  <input type="text" id="msgbox"/>
+  <br>
+  <span id="msgs"></span>
 
-    <script type="text/javascript">
-        var socket = io.connect();
-        $("#msgbox").keyup(function(event) {
-            if (event.which == 13) {
-                socket.emit('fromclient',{msg:$('#msgbox').val()});
-                $('#msgbox').val('');
-            }
-        });
-        socket.on('toclient',function(data){
-            console.log(data.msg);
-            $('#msgs').append(data.msg+'<BR>');
-        });
+  <script type="text/javascript"></script>
+
+  <script type="text/javascript">
+
+  $(document).ready(function() {
+    localVideo = document.getElementById("localVideo");
+    getUserMedia();
+  });
+
+  function getUserMedia() {
+    try {
+      navigator.webkitGetUserMedia({audio:true, video:true}, onUserMediaSuccess,
+        onUserMediaError);
+        console.log("Requested access to local media with new syntax.");
+      } catch (e) {
+        try {
+          navigator.webkitGetUserMedia("video, audio", onUserMediaSuccess, onUserMediaError);
+          console.log("Requested access to local media with old syntax.");
+        } catch (e) {
+          alert("webkitGetUserMedia() failed. Is the MediaStream flag enabled in about:flags?");
+          console.log("webkitGetUserMedia failed with exception: " + e.message);
+        }
+      }
+    }
+
+
+    function onUserMediaSuccess(stream) {
+      console.log("User has granted access to local media.");
+      var url = webkitURL.createObjectURL(stream);
+      localVideo.style.opacity = 1;
+      localVideo.src = url;
+      localStream = stream;
+      console.log(localStream);
+    }
+
+    function onUserMediaError(error) {
+      console.log("Failed to get access to local media. Error code was " + error.code);
+      alert("Failed to get access to local media. Error code was " + error.code + ".");
+    }
+
+
+
+    var socket = io.connect();
+    $("#msgbox").keyup(function(event) {
+      if (event.which == 13) {
+        socket.emit('fromclient',{msg:$('#msgbox').val()});
+        $('#msgbox').val('');
+      }
+    });
+    socket.on('toclient',function(data){
+      console.log(data.msg);
+      $('#msgs').append(data.msg+'<BR>');
+    });
     </script>
-</body>
-</html>
+  </body>
+  </html>
