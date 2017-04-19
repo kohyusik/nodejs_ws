@@ -1,7 +1,44 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf8">
 <title>capture microphone audio into buffer</title>
 
+<script type="text/javascript" src="./js/smoothie/smoothie.js"></script>
+
+</head>
+<body>
+    <p>Volume</p>
+    <input id="volume" type="range" min="0" max="1" step="0.1" value="0.5"/>
+    <p>chart</p>
+    <canvas id="mycanvas" width="400" height="100"></canvas>
+
+
+</body>
+
+
+
+
+
+
 <script type="text/javascript">
+
+  var smoothie = new SmoothieChart();
+  smoothie.streamTo(document.getElementById("mycanvas"));
+  // Data
+  var line1 = new TimeSeries();
+  var line2 = new TimeSeries();
+
+  // Add a random value to each line every second
+  setInterval(function() {
+    line1.append(new Date().getTime(), 1);
+    //console.log(line1);
+    //line2.append(new Date().getTime(), Math.random());
+  }, 1000);
+
+
+  // Add to SmoothieChart
+  smoothie.addTimeSeries(line1);
+  //smoothie.addTimeSeries(line2);
+  smoothie.streamTo(document.getElementById("mycanvas"), 1000 /*delay*/);
+
 
 
   var webaudio_tooling_obj = function () {
@@ -47,8 +84,8 @@
         console.log("__________ " + label);
 
         for (; index < max_index && index < size_buffer; index += 1) {
-
             console.log(given_typed_array[index]);
+            line1.append(new Date().getTime(), given_typed_array[index]);
         }
     }
 
@@ -60,10 +97,11 @@
 
         // microphone_output_buffer  <-- this buffer contains current gulp of data size BUFF_SIZE
 
-        show_some_data(microphone_output_buffer, 5, "from getChannelData");
+        //show_some_data(microphone_output_buffer, 5, "from getChannelData");
     }
 
     function start_microphone(stream){
+      console.log(stream);
 
       gain_node = audioContext.createGain();
       gain_node.connect( audioContext.destination );
@@ -107,23 +145,11 @@
 
         // draw the spectrogram
         if (microphone_stream.playbackState == microphone_stream.PLAYING_STATE) {
-
             show_some_data(array, 5, "from fft");
         }
       };
     }
 
   }(); //  webaudio_tooling_obj = function()
-
-
-
 </script>
-
-</head>
-<body>
-
-    <p>Volume</p>
-    <input id="volume" type="range" min="0" max="1" step="0.1" value="0.5"/>
-
-</body>
 </html>
