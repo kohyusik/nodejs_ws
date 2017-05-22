@@ -6,24 +6,36 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 </head>
 <body>
-  <div id="local" style="display:none;">
+  <!--
+  <div id="local" style="//display:none;">
     <video
       width="25%" height="25%" id="localVideo" autoplay="autoplay" style="opacity: 0;
       -webkit-transition-property: opacity;
       -webkit-transition-duration: 2s;">
     </video>
   </div>
+   -->
   <input type="file" accept="audio/*" capture="microphone">
   <b>Send message</b><p>
   <!-- id  <input type="text" id="idbox" value="guest1"/> -->
   <br><br>
-  Message  <input type="text" id="msgbox"/>
+  Message!  <input type="text" id="msgbox"/>
   <br>
   <span id="msgs"></span>
 
   <script type="text/javascript"></script>
 
   <script type="text/javascript">
+
+  var BUFF_SIZE = 16384;
+  var audioInput = null,
+      microphone_stream = null,
+      gain_node = null,
+      script_processor_node = null,
+      script_processor_fft_node = null,
+      analyserNode = null;
+  var audioContext = new AudioContext();
+
 
   $(document).ready(function() {
     localVideo = document.getElementById("localVideo");
@@ -32,12 +44,15 @@
 
   function getUserMedia() {
     try {
-      navigator.webkitGetUserMedia({audio:true, video:true}, onUserMediaSuccess,
+//      navigator.webkitGetUserMedia({audio:true, video:true}, onUserMediaSuccess,
+//        onUserMediaError);
+      navigator.webkitGetUserMedia({audio:true}, onUserMediaSuccess,
         onUserMediaError);
         console.log("Requested access to local media with new syntax.");
       } catch (e) {
         try {
           navigator.webkitGetUserMedia("video, audio", onUserMediaSuccess, onUserMediaError);
+            navigator.webkitGetUserMedia("audio", onUserMediaSuccess, onUserMediaError);
           console.log("Requested access to local media with old syntax.");
         } catch (e) {
           alert("webkitGetUserMedia() failed. Is the MediaStream flag enabled in about:flags?");
@@ -48,12 +63,91 @@
 
 
     function onUserMediaSuccess(stream) {
-      console.log("User has granted access to local media.");
+/*      console.log("User has granted access to local media.");
+      console.log(stream);
       var url = webkitURL.createObjectURL(stream);
+      console.log(url);
       localVideo.style.opacity = 1;
       localVideo.src = url;
       localStream = stream;
-      console.log(localStream);
+      //console.log(localStream);*/
+
+
+      // GainNode를 생성하여 오디오 그래프의 전반적인 볼륨을 조절할때 사용한다.
+      // AudioDestinationNode 은 컨텍스트 상의 모든 음원의 마지막 지점을 리턴한다. It can be thought of as the audio-rendering device.
+      gain_node = audioContext.createGain();
+      gain_node.connect( audioContext.destination );
+
+      // MediaStream 과 연관된 MediaStreamAudioSourceNode를 생성하여 내 컴퓨터의 마이크나 다른 소스를 통해 발생한 오디오 스트림의 정보를 보여준다.
+      microphone_stream = audioContext.createMediaStreamSource(stream);
+      //microphone_stream.connect(gain_node);
+
+      // ScriptProcessorNode 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
+      script_processor_node = audioContext.createScriptProcessor(BUFF_SIZE, 1, 1);
+      script_processor_node.onaudioprocess = process_microphone_buffer;
+      microphone_stream.connect(script_processor_node);
+
+
+      // --- setup FFT
+
+      // ScriptProcessorNode 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
+      script_processor_fft_node = audioContext.createScriptProcessor(2048, 1, 1);
+      script_processor_fft_node.connect(gain_node);
+
+      // AnalyserNode를 생성하여 오디오의 시간이나 주파수 정보를 알아내어 데이터를 시각화 하는 작업등에 사용을 할 수 있다.
+      analyserNode = audioContext.createAnalyser();
+      analyserNode.smoothingTimeConstant = 0;
+      analyserNode.fftSize = 2048;
+
+      microphone_stream.connect(analyserNode);
+
+      analyserNode.connect(script_processor_fft_node);
+
+      // script_processor_fft_node.onaudioprocess = function() {
+      //
+      //   // get the average for the first channel
+      //   var array = new Uint8Array(analyserNode.frequencyBinCount);
+      //   analyserNode.getByteFrequencyData(array);
+      //
+      //   // draw the spectrogram
+      //   if (microphone_stream.playbackState == microphone_stream.PLAYING_STATE) {
+      //       show_some_data(array, 5, "from fft");
+      //   }
+      // };
+
+
+
+
+
+
+
+
+    }
+
+    function process_microphone_buffer(event) {
+
+        var i, N, inp, microphone_output_buffer;
+
+        microphone_output_buffer = event.inputBuffer.getChannelData(0); // just mono - 1 channel for now
+
+        // microphone_output_buffer  <-- this buffer contains current gulp of data size BUFF_SIZE
+
+        show_some_data(microphone_output_buffer, 5, "from getChannelData");
+    }
+
+    function show_some_data(given_typed_array, num_row_to_display, label) {
+
+        var size_buffer = given_typed_array.length;
+        var index = 0;
+        var max_index = num_row_to_display;
+        console.log("__________ " + label);
+
+//        line1.append(new Date().getTime(), given_typed_array[0]);
+
+        for (; index < max_index && index < size_buffer; index += 1) {
+            console.log(given_typed_array[index]);
+//            line1.append(new Date().getTime(), given_typed_array[index]);
+        }
     }
 
     function onUserMediaError(error) {

@@ -48,7 +48,6 @@
     console.log("audio is starting up ...");
 
     var BUFF_SIZE = 16384;
-
     var audioInput = null,
         microphone_stream = null,
         gain_node = null,
@@ -81,13 +80,13 @@
         var index = 0;
         var max_index = num_row_to_display;
 
-        console.log("__________ " + label);
+//        console.log("__________ " + label);
 
         line1.append(new Date().getTime(), given_typed_array[0]);
 
         for (; index < max_index && index < size_buffer; index += 1) {
-            console.log(given_typed_array[index]);
-            //line1.append(new Date().getTime(), given_typed_array[index]);
+//            console.log(given_typed_array[index]);
+            line1.append(new Date().getTime(), given_typed_array[index]);
         }
     }
 
@@ -99,15 +98,16 @@
 
         // microphone_output_buffer  <-- this buffer contains current gulp of data size BUFF_SIZE
 
-        //show_some_data(microphone_output_buffer, 5, "from getChannelData");
+        show_some_data(microphone_output_buffer, 5, "from getChannelData");
     }
 
     function start_microphone(stream){
-      //console.log(stream);
+//      debugger
+      console.log(stream);
 
       gain_node = audioContext.createGain();
       gain_node.connect( audioContext.destination );
-
+//debugger
       microphone_stream = audioContext.createMediaStreamSource(stream);
       microphone_stream.connect(gain_node);
 
@@ -147,7 +147,7 @@
 
         // draw the spectrogram
         if (microphone_stream.playbackState == microphone_stream.PLAYING_STATE) {
-            //show_some_data(array, 5, "from fft");
+            show_some_data(array, 5, "from fft");
         }
       };
     }
