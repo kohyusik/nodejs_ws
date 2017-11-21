@@ -1,29 +1,305 @@
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="koh">
+<link rel="shortcut icon" href="/resources/images/favicon.ico">
+<link rel="icon" href="/resources/images/favicon.ico">
+<title>Female Tauren</title>
+<script src="/socket.io/socket.io.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js"></script>
 
-    <title></title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+<link rel="stylesheet" href="resources/css/chat.css">
 
 </head>
 <body>
-    <b>Send message</b><p>
-    Message  <input type="text" id="msgbox"/>
-    <br>
-    <span id="msgs"></span>
+	<nav class="navbar navbar-top navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Goin</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Home</a></li>
+					<!-- <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li> -->
+				</ul>
+			</div>
+			<!-- /.nav-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+	<!-- /.navbar -->
 
-    <script type="text/javascript">
-        var socket = io.connect();
-        $("#msgbox").keyup(function(event) {
-            if (event.which == 13) {
-                socket.emit('fromclient',{msg:$('#msgbox').val()});
-                $('#msgbox').val('');
-            }
-        });
-        socket.on('toclient',function(data){
-            console.log(data.msg);
-            $('#msgs').append(data.msg+'<BR>');
-        });
-    </script>
+	<div class="container">
+		<div class="row row-offcanvas row-offcanvas-right">
+			<div class="col-xs-12 col-sm-9">
+				<!-- <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p> -->
+				<!-- <div class="jumbotron">
+      <h1>drop the beat</h1>
+      <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p>
+    </div> -->
+				<div class="row">
+					<div class="col-xs-6 col-lg-6">
+						<h2>Coinone</h2>
+						<div id="coinone">
+							<div>
+								<div style="width: 30%;">
+									<span class="date"></span>
+
+								</div>
+							</div>
+							<div class="coins" style="display: none;">
+								<div>
+									<span class="currency"></span> : <span class="last"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6 col-lg-6">
+						<h2>Bithumb</h2>
+						<div id="bithumb">
+							<div>
+								<div style="width: 30%;">
+									<span class="date"></span>
+								</div>
+							</div>
+							<div class="coins" style="display: none;">
+								<div>
+									<span class="currency"></span> : <span class="last"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-6 col-lg-6">
+						<h2>Bittrex</h2>
+						<div id="bittrex">
+							<div>
+								<div style="width: 30%;">
+									<span class="date"></span>
+								</div>
+							</div>
+							<div class="coins" style="display: none;">
+								<div>
+									<span class="currency"></span> : <span class="last"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-xs-6 col-lg-6">
+      <h2>Heading</h2>
+      <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+      <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+    </div> -->
+
+				</div>
+				<!--/row-->
+			</div>
+			<!--/.col-xs-12.col-sm-9-->
+
+			<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+				<div>
+					<div class="panel-heading top-bar">
+						<div class="col-md-8 col-xs-8">
+							<h3 class="panel-title">
+								<span class="glyphicon glyphicon-comment"></span> Chat
+							</h3>
+						</div>
+					</div>
+					<input type="text" id="msgbox" />
+					<div id="chatbox" style="height: 300px; overflow: scroll;">
+					</div>
+				</div>
+				<!-- <div class="list-group">
+<a href="#" class="list-group-item active">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+<a href="#" class="list-group-item">Link</a>
+
+</div> -->
+			</div>
+			<!--/.sidebar-offcanvas-->
+		</div>
+		<!--/row-->
+		<hr>
+		<footer>
+			<p>&copy; Jason koh 1988</p>
+		</footer>
+
+	</div>
+	<!--/.container-->
+
+	<!-- chat -->
+	<!-- <aside id="sidebar_secondary"
+		class="tabbed_sidebar ng-scope chat_sidebar popup-box-on">
+		<div class="popup-head">
+			<div class="popup-head-left pull-left">
+				<h1><span class="glyphicon glyphicon-comment"></span> Chat</h1>
+			</div>
+			<div class="popup-head-right pull-right">
+				<div class="btn-group gurdeepoushan">
+					<ul role="menu" class="dropdown-menu pull-right">
+						<li><a href="#"><span class="glyphicon glyphicon-picture"
+								aria-hidden="true"></span> Gallery</a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-camera"
+								aria-hidden="true"></span> Photo</a></li>
+						<li><a href="#"><span
+								class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+								Video</a></li>
+						<li><a href="#"><span
+								class="glyphicon glyphicon-headphones" aria-hidden="true"></span>
+								Audio</a></li>
+						<li><a href="#"><span
+								class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+								Location</a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-user"
+								aria-hidden="true"></span> Contact</a></li>
+					</ul>
+				</div>
+
+				<button data-widget="remove" id="removeClass"
+					class="chat-header-button pull-right" type="button">
+					<i class="glyphicon glyphicon-remove"></i>
+				</button>
+			</div>
+		</div>
+
+		<div id="chat" class="chat_box_wrapper chat_box_small chat_box_active"
+			style="opacity: 1; display: block; transform: translateX(0px);">
+			<div class="chat_box touchscroll chat_box_colors_a">
+				<div class="chat_message_wrapper">
+					<div class="chat_user_avatar">
+						<a href="https://web.facebook.com/iamgurdeeposahan"
+							target="_blank"> <img alt="Gurdeep Osahan (Web Designer)"
+							title="Gurdeep Osahan (Web Designer)"
+							src="http://www.webncc.in/images/gurdeeposahan.jpg"
+							class="md-user-image">
+						</a>
+					</div>
+					<ul class="chat_message">
+						<li>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+								Distinctio, eum?</p>
+						</li>
+						<li>
+							<p>
+								Lorem ipsum dolor sit amet.<span class="chat_message_time">13:38</span>
+							</p>
+						</li>
+					</ul>
+				</div>
+				<div class="chat_message_wrapper chat_message_right">
+					<div class="chat_user_avatar">
+						<a href="https://web.facebook.com/iamgurdeeposahan"
+							target="_blank"> <img alt="Gurdeep Osahan (Web Designer)"
+							title="Gurdeep Osahan (Web Designer)"
+							src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg"
+							class="md-user-image">
+						</a>
+					</div>
+					<ul class="chat_message">
+						<li>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem
+								delectus distinctio dolor earum est hic id impedit ipsum minima
+								mollitia natus nulla perspiciatis quae quasi, quis recusandae,
+								saepe, sunt totam. <span class="chat_message_time">13:34</span>
+							</p>
+						</li>
+					</ul>
+				</div>
+				<div class="chat_message_wrapper">
+					<div class="chat_user_avatar">
+						<a href="https://web.facebook.com/iamgurdeeposahan"
+							target="_blank"> <img alt="Gurdeep Osahan (Web Designer)"
+							title="Gurdeep Osahan (Web Designer)"
+							src="http://www.webncc.in/images/gurdeeposahan.jpg"
+							class="md-user-image">
+						</a>
+					</div>
+					<ul class="chat_message">
+						<li>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
+								ea mollitia pariatur porro quae sed sequi sint tenetur ut
+								veritatis.https://www.facebook.com/iamgurdeeposahan <span
+									class="chat_message_time">23 Jun 1:10am</span>
+							</p>
+						</li>
+					</ul>
+				</div>
+				<div class="chat_message_wrapper chat_message_right">
+					<div class="chat_user_avatar">
+						<a href="https://web.facebook.com/iamgurdeeposahan"
+							target="_blank"> <img alt="Gurdeep Osahan (Web Designer)"
+							title="Gurdeep Osahan (Web Designer)"
+							src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg"
+							class="md-user-image">
+						</a>
+					</div>
+					<ul class="chat_message">
+						<li>
+							<p>Lorem ipsum dolor sit amet, consectetur.</p>
+						</li>
+						<li>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur adipisicing elit. <span
+									class="chat_message_time">Friday 13:34</span>
+							</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="chat_submit_box">
+			<div class="uk-input-group">
+				<div class="gurdeep-chat-box">
+					<span style="vertical-align: sub;" class="uk-input-group-addon">
+						<a href="#"><i class="fa fa-smile-o"></i></a>
+					</span> <input type="text" placeholder="Type a message"
+						id="submit_message" name="submit_message" class="md-input">
+					<span style="vertical-align: sub;" class="uk-input-group-addon">
+						<a href="#"><i class="fa fa-camera"></i></a>
+					</span>
+				</div>
+
+				<span class="uk-input-group-addon"> <a href="#"><i
+						class="glyphicon glyphicon-send"></i></a>
+				</span>
+			</div>
+		</div>
+	</aside> -->
+
+	<script src="resources/js/chat.js"></script>
+	<script src="resources/js/coin.js"></script>
 </body>
 </html>

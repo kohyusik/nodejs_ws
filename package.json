@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/kohyusik/nodejs_ws#readme",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "socket.io": "^1.7.3"
+    "body-parser": "^1.18.2",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "request": "*",
+    "socket.io": "^2.0.4"
   }
 }
