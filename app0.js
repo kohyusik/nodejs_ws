@@ -24,7 +24,7 @@ function getRedis(key) {
 	});
 }
 
-//setRedis('dateKey', Date());
+setRedis('dateKey', Date());
 getRedis('dateKey');
 
 // var room = {test: "hi", test2:"ho"}
